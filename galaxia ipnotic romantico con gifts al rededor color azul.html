@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Para Ti ✨</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            overflow: hidden;
+            background: #0a0010;
+            font-family: 'Montserrat', sans-serif;
+            color: white;
+            touch-action: none;
+        }
+        #intro-loader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #0a0010;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 100; transition: opacity 1.5s ease-in-out;
+        }
+        #intro-loader img {
+            width: 300px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 60px rgba(255, 20, 147, 0.6);
+        }
+        #intro-loader p {
+            font-family: 'Dancing Script', cursive;
+            font-size: 28px;
+            color: #ffb6c1;
+            text-shadow: 0 0 20px rgba(255, 20, 147, 0.5);
+            margin-bottom: 25px;
+            text-align: center;
+            padding: 0 20px;
+        }
+        #start-button {
+            padding: 18px 50px;
+            background: #cc0022;
+            border: none;
+            color: #fff;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            letter-spacing: 2px;
+            font-size: 18px;
+            box-shadow: 0 0 30px rgba(204, 0, 34, 0.7);
+            transition: all 0.3s;
+            font-family: 'Montserrat', sans-serif;
+        }
+        #start-button:hover { transform: scale(1.1); box-shadow: 0 0 60px rgba(204, 0, 34, 1); }
+        #canvas-container {
+            position: relative;
+            width: 100vw; height: 100vh;
+            z-index: 20;
+            touch-action: none;
+            pointer-events: auto;
+        }
+        #avatar-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 30;
+            pointer-events: none;
+        }
+        .avatar-shell {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            pointer-events: auto;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 30;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+        }
+        .avatar-sphere {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255,105,180,0.6), rgba(204,0,34,0.2));
+            box-shadow: 0 0 40px rgba(204,0,34,0.7), 0 0 20px rgba(255,105,180,0.3) inset;
+            border: 2px solid rgba(255,255,255,0.15);
+        }
+        .avatar-gif {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            height: 85%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: none;
+        }
+        #modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+        }
+        .modal-content {
+            background: rgba(20, 0, 10, 0.7);
+            border: 1px solid rgba(204, 0, 34, 0.3);
+            border-radius: 20px; padding: 40px; max-width: 400px; width: 85%;
+            text-align: center; box-shadow: 0 0 50px rgba(204, 0, 34, 0.4);
+            transform: translateY(30px); transition: transform 0.5s ease;
+        }
+        #modal-overlay.active { opacity: 1; pointer-events: auto; }
+        #modal-overlay.active .modal-content { transform: translateY(0); }
+        .modal-content img {
+            width: 100%; border-radius: 15px; margin-bottom: 25px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+        #typewriter-text {
+            font-family: 'Dancing Script', cursive; font-size: 32px;
+            color: #ffb6c1; text-shadow: 0 0 10px rgba(255, 182, 193, 0.6);
+            min-height: 80px; margin-bottom: 20px;
+        }
+        #close-modal {
+            padding: 10px 30px; background: transparent;
+            border: 1px solid #cc0022; color: #cc0022; border-radius: 30px;
+            cursor: pointer; font-weight: 600; transition: all 0.3s;
+        }
+        #close-modal:hover { background: #cc0022; color: #fff; }
+        #hint {
+            position: fixed; bottom: 30px; width: 100%; text-align: center;
+            color: rgba(255, 182, 193, 0.8); font-size: 14px; letter-spacing: 2px;
+            z-index: 10; pointer-events: none; opacity: 0; transition: opacity 2s;
+        }
+    </style>
+</head>
+<body>
+    <div id="intro-loader">
+        <img src="https://bcstorage.bcode.me/index.php?proxy_url=https%3A%2F%2Ff005.backblazeb2.com%2Ffile%2Fbcodestorage%2FBCDetallesPro_Enpoind%252Ftemp_upload_1787006327438.jpeg" alt="Cargando...">
+        <p>💖 Mi amor, tengo algo especial para ti 💖</p>
+        <button id="start-button">Haz clic aquí ✨</button>
+    </div>
+    <div id="canvas-container"></div>
+    <div id="avatar-overlay"></div>
+    <div id="hint">Gira el espacio y toca las imágenes ✨</div>
+    <div id="modal-overlay">
+        <div class="modal-content">
+            <img id="modal-img" src="" alt="Avatar animado">
+            <div id="typewriter-text"></div>
+            <button id="close-modal">Cerrar</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        const audio = new Audio('https://bcodestorague.anteroteobaldob.workers.dev/share/anteroteobaldob_gmail_com/AUDIO/Until%20i%20found%20you.mp3');
+        audio.loop = true; audio.volume = 0.7;
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x0a0010, 0.00015);
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
+        camera.position.set(0, 0, 800);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.sortObjects = true;
+        container.appendChild(renderer.domElement);
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true; controls.dampingFactor = 0.05;
+        controls.autoRotate = false; controls.autoRotateSpeed = 0.4;
+        controls.enablePan = true;
+        controls.enableZoom = true;
+        controls.zoomSpeed = 1.2;
+        controls.minDistance = 10;
+        controls.maxDistance = 100;
+        controls.target.set(0, 3, 0);
+
+        container.addEventListener('wheel', (e) => { e.preventDefault(); }, { passive: false });
+        container.addEventListener('touchmove', (e) => { if (e.target === renderer.domElement) e.preventDefault(); }, { passive: false });
+
+        let phase = 0;
+
+        document.getElementById('start-button').addEventListener('click', () => {
+            audio.play().catch(e => console.log(e));
+            document.getElementById('intro-loader').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('intro-loader').style.display = 'none';
+                phase = 1;
+            }, 1000);
+        });
+
+        function createGlowTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 64; canvas.height = 64;
+            const ctx = canvas.getContext('2d');
+            const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+            gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+            gradient.addColorStop(0.3, 'rgba(204, 0, 34, 0.8)');
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = gradient; ctx.fillRect(0, 0, 64, 64);
+            return new THREE.CanvasTexture(canvas);
+        }
+        const particleTexture = createGlowTexture();
+
+        const starsGeo = new THREE.BufferGeometry();
+        const starsCount = 70000;
+        const starsPos = new Float32Array(starsCount * 3);
+        const starsCol = new Float32Array(starsCount * 3);
+        const starsSizes = new Float32Array(starsCount);
+        for(let i = 0; i < starsCount; i++) {
+            const r = 80 + Math.random() * 450;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos((Math.random() * 2) - 1);
+            starsPos[i*3] = r * Math.sin(phi) * Math.cos(theta);
+            starsPos[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+            starsPos[i*3+2] = r * Math.cos(phi);
+            const color = new THREE.Color().setHSL(0.6 + Math.random() * 0.4, 0.9, 0.6 + Math.random() * 0.4);
+            starsCol[i*3] = color.r; starsCol[i*3+1] = color.g; starsCol[i*3+2] = color.b;
+            starsSizes[i] = 1.0 + Math.random() * 3.5;
+        }
+        starsGeo.setAttribute('position', new THREE.BufferAttribute(starsPos, 3));
+        starsGeo.setAttribute('color', new THREE.BufferAttribute(starsCol, 3));
+        starsGeo.setAttribute('size', new THREE.BufferAttribute(starsSizes, 1));
+        const starsMat = new THREE.PointsMaterial({
+            size: 2.2,
+            vertexColors: true,
+            map: particleTexture,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            sizeAttenuation: true
+        });
+        const stars = new THREE.Points(starsGeo, starsMat);
+        scene.add(stars);
+
+        const spiralGeo = new THREE.BufferGeometry();
+        const spiralCount = 90000;
+        const spiralPos = new Float32Array(spiralCount * 3);
+        const spiralCol = new Float32Array(spiralCount * 3);
+        for(let i = 0; i < spiralCount; i++) {
+            const radius = 15 + Math.pow(Math.random(), 1.8) * 220;
+            const angle = radius * 0.35 + (i % 5) * Math.PI * 0.4;
+            const spread = 0.3 + Math.random() * 4;
+            spiralPos[i*3] = Math.cos(angle) * radius + (Math.random()-0.5)*spread;
+            spiralPos[i*3+1] = (Math.random() - 0.5) * 6;
+            spiralPos[i*3+2] = Math.sin(angle) * radius + (Math.random()-0.5)*spread;
+            const hue = 0.5 + (radius / 280) * 0.4;
+            const color = new THREE.Color().setHSL(hue, 0.85, 0.5 + Math.random() * 0.5);
+            spiralCol[i*3] = color.r; spiralCol[i*3+1] = color.g; spiralCol[i*3+2] = color.b;
+        }
+        spiralGeo.setAttribute('position', new THREE.BufferAttribute(spiralPos, 3));
+        spiralGeo.setAttribute('color', new THREE.BufferAttribute(spiralCol, 3));
+        const spiralMat = new THREE.PointsMaterial({
+            size: 1.0,
+            vertexColors: true,
+            map: particleTexture,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            sizeAttenuation: true
+        });
+        const spiral = new THREE.Points(spiralGeo, spiralMat);
+        spiral.position.y = -8;
+        scene.add(spiral);
+
+        const tunnelGeo = new THREE.BufferGeometry();
+        const tunnelCount = 18000;
+        const tunnelPos = new Float32Array(tunnelCount * 3);
+        const tunnelCol = new Float32Array(tunnelCount * 3);
+        const tunnelColors = [new THREE.Color(0x00ffff), new THREE.Color(0xff00ff), new THREE.Color(0xffff00)];
+        for(let i = 0; i < tunnelCount; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const radius = 10 + Math.random() * 50;
+            tunnelPos[i*3] = Math.cos(angle) * radius;
+            tunnelPos[i*3+1] = Math.sin(angle) * radius;
+            tunnelPos[i*3+2] = Math.random() * 850;
+            const c = tunnelColors[Math.floor(Math.random() * tunnelColors.length)];
+            tunnelCol[i*3] = c.r; tunnelCol[i*3+1] = c.g; tunnelCol[i*3+2] = c.b;
+        }
+        tunnelGeo.setAttribute('position', new THREE.BufferAttribute(tunnelPos, 3));
+        tunnelGeo.setAttribute('color', new THREE.BufferAttribute(tunnelCol, 3));
+        const tunnel = new THREE.Points(tunnelGeo, new THREE.PointsMaterial({ size: 3.5, vertexColors: true, map: particleTexture, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
+        scene.add(tunnel);
+
+        const finalGroup = new THREE.Group();
+        scene.add(finalGroup);
+
+        const heartGroup = new THREE.Group();
+        heartGroup.position.set(0, 5, 0);
+        heartGroup.scale.set(0, 0, 0);
+        heartGroup.renderOrder = 999;
+        finalGroup.add(heartGroup);
+
+        const heartGeo = new THREE.BufferGeometry();
+        const heartCount = 55000;
+        const heartPos = new Float32Array(heartCount * 3);
+        for(let i=0; i<heartCount; i++) {
+            const t = Math.random() * Math.PI * 2;
+            let x = 16 * Math.pow(Math.sin(t), 3);
+            let y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+            let z = (Math.random() - 0.5) * 6;
+            const noise = (Math.random() > 0.5 ? 2.0 : 0.6);
+            x += (Math.random() - 0.5) * noise;
+            y += (Math.random() - 0.5) * noise;
+            const scale = 0.4;
+            heartPos[i*3] = x * scale; heartPos[i*3+1] = y * scale; heartPos[i*3+2] = z * scale;
+        }
+        heartGeo.setAttribute('position', new THREE.BufferAttribute(heartPos, 3));
+        const heartMat = new THREE.PointsMaterial({
+            color: 0xcc0022,
+            size: 0.5,
+            map: particleTexture,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            depthTest: false,
+            opacity: 0.95
+        });
+        const heartPoints = new THREE.Points(heartGeo, heartMat);
+        heartPoints.renderOrder = 999;
+        heartGroup.add(heartPoints);
+
+        const glowSprite = new THREE.Sprite(new THREE.SpriteMaterial({
+            map: particleTexture,
+            color: 0xcc0022,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+            opacity: 0.35,
+            depthTest: false
+        }));
+        glowSprite.scale.set(18, 18, 1);
+        glowSprite.position.set(0, 0, 0);
+        glowSprite.renderOrder = 999;
+        heartGroup.add(glowSprite);
+
+        const galaxyGroup = new THREE.Group();
+        galaxyGroup.position.set(0, -3, 0);
+        galaxyGroup.scale.set(0, 0, 0);
+        finalGroup.add(galaxyGroup);
+
+        const galaxyGeo = new THREE.BufferGeometry();
+        const galaxyCount = 80000;
+        const galPos = new Float32Array(galaxyCount * 3);
+        const galCol = new Float32Array(galaxyCount * 3);
+        for(let i=0; i<galaxyCount; i++) {
+            const radius = Math.pow(Math.random(), 2.5) * 45 + 3;
+            const angle = (i % 3) * Math.PI * 0.6 + radius * 0.5;
+            galPos[i*3] = Math.cos(angle) * radius + (Math.random()-0.5)*2;
+            galPos[i*3+1] = (Math.random() - 0.5) * (2 - radius*0.03);
+            galPos[i*3+2] = Math.sin(angle) * radius + (Math.random()-0.5)*2;
+            const color = new THREE.Color();
+            if(radius < 10) color.setHex(0xffaa00);
+            else if (radius < 25) color.setHex(0xcc0022);
+            else color.setHex(0x5500aa);
+            galCol[i*3] = color.r; galCol[i*3+1] = color.g; galCol[i*3+2] = color.b;
+        }
+        galaxyGeo.setAttribute('position', new THREE.BufferAttribute(galPos, 3));
+        galaxyGeo.setAttribute('color', new THREE.BufferAttribute(galCol, 3));
+        galaxyGroup.add(new THREE.Points(galaxyGeo, new THREE.PointsMaterial({ size: 0.3, vertexColors: true, map: particleTexture, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })));
+
+        const spritesGroup = new THREE.Group();
+        spritesGroup.renderOrder = 0;
+        finalGroup.add(spritesGroup);
+        const allSprites = [];
+        const avatarMarkers = [];
+
+        const avatarData = [
+            { url: "https://bcstorage.bcode.me/index.php?proxy_url=https%3A%2F%2Ff005.backblazeb2.com%2Ffile%2Fbcodestorage%2FBCDetallesPro_Enpoind%252Ftemp_upload_1787006359497.jpeg", text: "Tú me haces ronronear el corazón ❤️" },
+            { url: "https://bcstorage.bcode.me/index.php?proxy_url=https%3A%2F%2Ff005.backblazeb2.com%2Ffile%2Fbcodestorage%2FBCDetallesPro_Enpoind%252Ftemp_upload_1787006327438.jpeg", text: "¿Me das el honor de estar siempre a tu lado? ✨" },
+            { url: "https://bcstorage.bcode.me/index.php?proxy_url=https%3A%2F%2Ff005.backblazeb2.com%2Ffile%2Fbcodestorage%2FBCDetallesPro_Enpoind%252Ftemp_upload_1787006422215.jpeg", text: "Mi lugar favorito en el mundo es contigo." },
+            { url: "https://bcstorage.bcode.me/index.php?proxy_url=https%3A%2F%2Ff005.backblazeb2.com%2Ffile%2Fbcodestorage%2FBCDetallesPro_Enpoind%252Ftemp_upload_1787006533219.jpeg", text: "Eres la casualidad más hermosa." },
+            { url: "https://bcstorage.bcode.me/index.php?proxy_url=https%3A%2F%2Ff005.backblazeb2.com%2Ffile%2Fbcodestorage%2FBCDetallesPro_Enpoind%252Ftemp_upload_1787006569366.jpeg", text: "¿Quieres ser la dueña de mi corazón?" },
+            { url: "https://bcstorage.bcode.me/index.php?proxy_url=https%3A%2F%2Ff005.backblazeb2.com%2Ffile%2Fbcodestorage%2FBCDetallesPro_Enpoind%252Ftemp_upload_1787006594651.jpeg", text: "Dime que sí y prometo hacerte sonreír siempre." }
+        ];
+
+        const avatarOverlay = document.getElementById('avatar-overlay');
+        avatarData.forEach((data, index) => {
+            const marker = new THREE.Object3D();
+            const angle = (index / avatarData.length) * Math.PI * 2;
+            const radius = 18;
+            marker.userData = {
+                targetPos: new THREE.Vector3(Math.cos(angle) * radius, -2 + (Math.random() - 0.5) * 3, Math.sin(angle) * radius),
+                active: false,
+                gifUrl: data.url,
+                phrase: data.text
+            };
+            marker.position.set(0, 5, 0);
+            spritesGroup.add(marker);
+            avatarMarkers.push(marker);
+            allSprites.push(marker);
+
+            const shell = document.createElement('div');
+            shell.className = 'avatar-shell';
+            shell.style.opacity = '0';
+            shell.dataset.index = index;
+            shell.innerHTML = `
+                <div class="avatar-sphere"></div>
+                <img class="avatar-gif" src="${data.url}" alt="avatar">
+            `;
+            avatarOverlay.appendChild(shell);
+            marker.userData.htmlElement = shell;
+        });
+
+        const palabras = [
+            "MI CORAZÓN ES TUYO", "CONTIGO SIEMPRE", "INFINITO ∞", "ERES MI TODO", "MAGIA",
+            "AMOR ETERNO", "ME HACES FELIZ", "PRECIOSA", "ÚNICA", "MI VIDA", "TE AMO", "SÍ"
+        ];
+        for(let i=0; i<30; i++) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512; canvas.height = 128;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, 512, 128);
+            ctx.font = "bold 40px 'Montserrat', sans-serif";
+            ctx.textAlign = "center"; ctx.textBaseline = "middle";
+            ctx.shadowColor = "#cc0022";
+            ctx.shadowBlur = 30;
+            ctx.fillStyle = "#ffffff";
+            ctx.fillText(palabras[Math.floor(Math.random() * palabras.length)], 256, 64);
+            const tex = new THREE.CanvasTexture(canvas);
+            tex.needsUpdate = true;
+            const spr = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+            spr.scale.set(12, 3, 1);
+            spr.renderOrder = 0;
+            const radius = 8 + Math.random() * 16;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos((Math.random() * 2) - 1);
+            spr.userData = {
+                targetPos: new THREE.Vector3(radius * Math.sin(phi) * Math.cos(theta), -4 + (Math.random() - 0.5) * 5, radius * Math.sin(phi) * Math.sin(theta)),
+                type: 'text',
+                active: false
+            };
+            spr.position.set(0, 5, 0);
+            spritesGroup.add(spr);
+            allSprites.push(spr);
+        }
+
+        let typeInterval;
+        function startTypewriter(text) {
+            const container = document.getElementById('typewriter-text');
+            container.innerHTML = "";
+            let i = 0;
+            clearInterval(typeInterval);
+            typeInterval = setInterval(() => {
+                if(i < text.length) {
+                    container.innerHTML += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typeInterval);
+                }
+            }, 60);
+        }
+
+        avatarOverlay.addEventListener('click', (e) => {
+            if(phase < 4) return;
+            const shell = e.target.closest('.avatar-shell');
+            if(!shell) return;
+            const index = parseInt(shell.dataset.index);
+            const marker = avatarMarkers[index];
+            if(marker && marker.userData.phrase) {
+                document.getElementById('modal-img').src = marker.userData.gifUrl;
+                document.getElementById('modal-overlay').classList.add('active');
+                startTypewriter(marker.userData.phrase);
+            }
+        });
+
+        document.getElementById('close-modal').addEventListener('click', () => {
+            document.getElementById('modal-overlay').classList.remove('active');
+            clearInterval(typeInterval);
+        });
+
+        const clock = new THREE.Clock();
+        let heartScaleTarget = 0;
+        let galaxyScaleTarget = 0;
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        function animar() {
+            requestAnimationFrame(animar);
+            const time = clock.getElapsedTime();
+
+            if(phase === 1) {
+                camera.position.z -= 3.0;
+                tunnel.rotation.z += 0.015;
+                if(camera.position.z <= 60) {
+                    phase = 2; tunnel.visible = false;
+                    camera.position.set(0, 4, 30);
+                    controls.target.set(0, 3, 0);
+                    controls.autoRotate = true;
+                    heartScaleTarget = 0.75;
+                    setTimeout(() => { phase = 3; galaxyScaleTarget = 0.7; }, 2000);
+                    setTimeout(() => {
+                        phase = 4;
+                        avatarMarkers.forEach(m => m.userData.active = true);
+                        document.getElementById('hint').style.opacity = '1';
+                    }, 4000);
+                    setTimeout(() => {
+                        phase = 5;
+                        allSprites.forEach(s => { if(s.userData.type === 'text') s.userData.active = true; });
+                    }, 5500);
+                }
+            }
+
+            if(phase >= 2) {
+                controls.update();
+
+                allSprites.forEach(obj => {
+                    if(obj.userData.active && obj.userData.htmlElement) {
+                        const el = obj.userData.htmlElement;
+                        const worldPos = obj.position.clone();
+                        const dist = camera.position.distanceTo(worldPos);
+                        const baseSize = 90;
+                        const refDist = 30;
+                        let scale = (refDist / dist) * 1.2;
+                        scale = Math.min(Math.max(scale, 0.7), 2.0);
+                        el.style.width = (baseSize * scale) + 'px';
+                        el.style.height = (baseSize * scale) + 'px';
+                    }
+                });
+
+                if(heartGroup.scale.x < heartScaleTarget) {
+                    heartGroup.scale.lerp(new THREE.Vector3(heartScaleTarget, heartScaleTarget, heartScaleTarget), 0.04);
+                } else if(heartScaleTarget > 0) {
+                    const pulse = 1.0 + Math.sin(time * 4) * 0.04;
+                    heartGroup.scale.set(pulse * 0.75, pulse * 0.75, pulse * 0.75);
+                }
+                if(galaxyGroup.scale.x < galaxyScaleTarget) {
+                    galaxyGroup.scale.lerp(new THREE.Vector3(galaxyScaleTarget, galaxyScaleTarget, galaxyScaleTarget), 0.02);
+                }
+                galaxyGroup.rotation.y = time * 0.06;
+                stars.rotation.y = time * 0.002;
+                stars.rotation.x = time * 0.001;
+                spiral.rotation.y = time * 0.015;
+                spiral.rotation.x = time * 0.005;
+                tunnel.rotation.z += 0.01;
+
+                allSprites.forEach(obj => {
+                    if(obj.userData.active) {
+                        if(obj.type === 'Sprite') {
+                            obj.material.opacity = Math.min(obj.material.opacity + 0.03, 1);
+                            obj.position.lerp(obj.userData.targetPos, 0.035);
+                            if(obj.position.distanceTo(obj.userData.targetPos) < 2) {
+                                obj.position.y += Math.sin(time * 2 + obj.id) * 0.03;
+                            }
+                        } else if(obj.isObject3D && obj.userData.htmlElement) {
+                            obj.position.lerp(obj.userData.targetPos, 0.035);
+                            if(obj.position.distanceTo(obj.userData.targetPos) < 2) {
+                                obj.position.y += Math.sin(time * 2 + obj.id) * 0.03;
+                            }
+                            const worldPos = obj.position.clone();
+                            const projected = worldPos.project(camera);
+                            const x = (projected.x * 0.5 + 0.5) * window.innerWidth;
+                            const y = (-projected.y * 0.5 + 0.5) * window.innerHeight;
+                            const el = obj.userData.htmlElement;
+                            el.style.left = x + 'px';
+                            el.style.top = y + 'px';
+                            el.style.opacity = Math.min(parseFloat(el.style.opacity) + 0.03, 1);
+                        }
+                    }
+                });
+            }
+            renderer.render(scene, camera);
+        }
+        animar();
+    </script>
+</body>
+</html>
