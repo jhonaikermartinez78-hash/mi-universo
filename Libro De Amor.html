@@ -1,0 +1,1050 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mil Cosas Por Las Que Te Amo 💖</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Dancing+Script:wght@400;700&family=Cormorant+Garamond:wght@300;400;500&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --book-w: 1000px;
+    --book-h: 700px;
+    --page-w: calc(var(--book-w) / 2);
+    --page-h: var(--book-h);
+    --persp: 3600px;
+    --cover-bg: #8B0000;
+    --cover-accent: #f8c8dc;
+    --ink: #2c1a1a;
+    --radius: 16px;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html,body{
+    height:100%;
+    overflow:hidden;
+    font-family:'Cormorant Garamond', serif;
+    background: 
+      radial-gradient(circle at 20% 30%, rgba(139, 0, 0, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(101, 67, 33, 0.08) 0%, transparent 50%),
+      linear-gradient(135deg, #f8f6f3 0%, #f0ede8 100%);
+  }
+
+  .stars{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+  .star{position:absolute;border-radius:50%;background:rgba(139, 0, 0, 0.3);opacity:0;animation:twinkle linear infinite}
+  @keyframes twinkle{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.4)}}
+
+  .shooting-star{position:fixed;width:140px;height:2px;background:linear-gradient(90deg,#8B0000,transparent);
+    filter:drop-shadow(0 0 6px #8B0000);opacity:.9;z-index:10000;pointer-events:none}
+
+  .scene{
+    position:fixed;
+    inset:0;
+    perspective:var(--persp);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:3;
+    padding: 20px;
+  }
+  
+  .book-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .book{
+    width:var(--book-w);
+    height:var(--book-h);
+    position:relative;
+    transform-style:preserve-3d;
+    opacity:0;
+    transform: scale(.9);
+    transition:opacity 1.2s ease, transform 1.2s cubic-bezier(.25,.8,.25,1);
+    margin: 0 auto;
+  }
+  
+  .book.ready{
+    opacity:1;
+    transform: scale(1);
+  }
+
+  .sheet{
+    width:var(--page-w);
+    height:var(--book-h);
+    position:absolute;
+    top:0;
+    left:50%;
+    transform-origin:left center;
+    transform-style:preserve-3d;
+    border-radius:var(--radius);
+    overflow:visible;
+    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .face{
+    position:absolute;
+    inset:0;
+    transform-style:preserve-3d;
+    backface-visibility:hidden;
+    border-radius:var(--radius);
+    overflow:hidden
+  }
+  
+  .face.left{transform:rotateY(180deg)}
+  .inner{position:absolute;inset:0}
+
+  .cover{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    border-radius:var(--radius);
+    color:#fff;
+    padding:40px;
+    box-shadow:0 25px 50px rgba(0,0,0,.5);
+    background: 
+      url('https://images.unsplash.com/photo-1558618666-fcd25856cd63?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80') center/cover,
+      linear-gradient(135deg, #8B0000 0%, #660000 100%);
+  }
+  
+  .cover h1{
+    font-size:4rem;
+    margin:0 0 1.5rem;
+    text-shadow:0 4px 12px rgba(0,0,0,.9);
+    font-family:'Great Vibes', cursive;
+    background: rgba(0,0,0,0.4);
+    padding: 15px 40px;
+    border-radius: 15px;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  
+  .cover p{
+    font-size:2rem;
+    margin:0;
+    text-shadow:0 2px 6px rgba(0,0,0,.9);
+    background: rgba(0,0,0,0.4);
+    padding: 10px 25px;
+    border-radius: 10px;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  
+  .page{
+    position:absolute;
+    inset:0;
+    border-radius:var(--radius);
+    color:var(--ink);
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content:center;
+    padding:40px;
+    text-align:center;
+    font-size:1.8rem;
+    line-height:1.6;
+    background:
+      url('https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80') center/cover;
+    box-shadow:inset 0 0 30px rgba(0,0,0,.15);
+    z-index:0;
+    font-weight: 400;
+  }
+  
+  .page:nth-child(even){
+    background:
+      url('https://images.unsplash.com/photo-1531366936337-7c912a4589a7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80') center/cover;
+  }
+  
+  .page-image {
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 30px;
+    border: 8px solid rgba(255,255,255,0.9);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    transition: transform 0.5s ease;
+  }
+
+  .page:hover .page-image {
+    transform: scale(1.05);
+  }
+
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    color: #8B0000;
+    margin-bottom: 20px;
+    font-weight: 500;
+    text-shadow: 0 2px 4px rgba(255,255,255,0.8);
+  }
+
+  .page-content {
+    position: relative;
+    z-index: 2;
+    max-width: 85%;
+  }
+
+  .page-text {
+    font-size: 1.8rem;
+    line-height: 1.7;
+    color: #2c1a1a;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+    margin-bottom: 15px;
+  }
+  
+  .folio{
+    position:absolute;
+    bottom:20px;
+    width:100%;
+    text-align:center;
+    font-size:1.2rem;
+    opacity:.7;
+    color:#8B0000;
+    font-weight: 500;
+    letter-spacing: 1px;
+  }
+
+  .shadow{
+    position:absolute;
+    inset:0;
+    border-radius:var(--radius);
+    pointer-events:none;
+    opacity:0;
+    transition:opacity .35s ease;
+    mix-blend-mode:multiply;
+    z-index:0
+  }
+  
+  .curl-overlay,.specular,.edge-spec{z-index:1}
+  .curl-overlay{position:absolute;inset:0;pointer-events:none;opacity:0}
+  .edge-spec{
+    position:absolute;
+    top:0;
+    bottom:0;
+    width:10px;
+    right:0;
+    background:linear-gradient(180deg,rgba(0,0,0,.06),rgba(255,255,255,.08),rgba(0,0,0,.06));
+    filter:blur(.4px);
+    opacity:0
+  }
+  
+  .specular{
+    position:absolute;
+    inset:0;
+    opacity:0;
+    mix-blend-mode:screen;
+    background:radial-gradient(100% 60% at 35% 50%,rgba(255,255,255,.20) 0%,rgba(255,255,255,.06) 35%,transparent 60%)
+  }
+
+  .hearts{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:11000}
+  .hearts span{position:absolute;opacity:.85;font-size:2rem}
+  .hearts:not(.horizontal) span{bottom:-20px;animation:floatV var(--dur,6s) linear both}
+  @keyframes floatV{0%{transform:translateY(0) scale(1);opacity:.85}100%{transform:translateY(-120vh) scale(1.5);opacity:0}}
+  .hearts.horizontal{transform:rotate(90deg);transform-origin:center}
+  .hearts.horizontal span{bottom:-20px;animation:floatV var(--dur,6s) linear both}
+
+  .page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 253, 248, 0.88);
+    pointer-events: none;
+    z-index: 1;
+    border-radius: var(--radius);
+  }
+  
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(139, 0, 0, 0.35);
+    pointer-events: none;
+    border-radius: var(--radius);
+  }
+  
+  .sheet.turning {
+    z-index: 10000 !important;
+    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .edge-glow {
+    position: absolute;
+    top: 0;
+    right: -2px;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(to right, 
+      transparent 0%, 
+      rgba(184, 134, 11, 0.5) 50%, 
+      transparent 100%);
+    z-index: 5;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .sheet:hover .edge-glow {
+    opacity: 1;
+  }
+  
+  .romantic-decoration {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 3;
+  }
+  
+  .flourish {
+    position: absolute;
+    opacity: 0.12;
+    font-size: 4rem;
+    color: #8B0000;
+    font-family: 'Great Vibes', cursive;
+  }
+  
+  .flourish-1 {
+    top: 8%;
+    left: 8%;
+  }
+  
+  .flourish-2 {
+    bottom: 12%;
+    right: 8%;
+  }
+  
+  .page-border {
+    position: absolute;
+    pointer-events: none;
+    z-index: 4;
+  }
+  
+  .border-top {
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20" width="100" height="20"><path d="M0,10 Q10,0 20,10 T40,10 T60,10 T80,10 T100,10 L100,20 L0,20 Z" fill="%23f8c8dc"/></svg>') repeat-x;
+  }
+  
+  .border-bottom {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20" width="100" height="20"><path d="M0,10 Q10,20 20,10 T40,10 T60,10 T80,10 T100,10 L100,0 L0,0 Z" fill="%23f8c8dc"/></svg>') repeat-x;
+  }
+  
+  .border-left {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 30px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 100" width="20" height="100"><path d="M10,0 Q0,10 10,20 T10,40 T10,60 T10,80 T10,100 L20,100 L20,0 Z" fill="%23f8c8dc"/></svg>') repeat-y;
+  }
+  
+  .border-right {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 30px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 100" width="20" height="100"><path d="M10,0 Q20,10 10,20 T10,40 T10,60 T10,80 T10,100 L0,100 L0,0 Z" fill="%23f8c8dc"/></svg>') repeat-y;
+  }
+
+  .kitty-decoration {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><circle cx="30" cy="30" r="28" fill="white" stroke="%23f8c8dc" stroke-width="2"/><circle cx="20" cy="20" r="5" fill="black"/><circle cx="40" cy="20" r="5" fill="black"/><path d="M25,35 Q30,40 35,35" stroke="black" stroke-width="2" fill="none"/><path d="M15,15 Q20,5 25,15" stroke="%23f8c8dc" stroke-width="3" fill="none"/><path d="M35,15 Q40,5 45,15" stroke="%23f8c8dc" stroke-width="3" fill="none"/></svg>') no-repeat center/contain;
+    opacity: 0.7;
+    z-index: 5;
+  }
+  
+  .kitty-1 {
+    top: 10%;
+    left: 10%;
+  }
+  
+  .kitty-2 {
+    bottom: 10%;
+    right: 10%;
+  }
+  
+  .glow-effect {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.15) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .spine, .spine-back {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 28px;
+    background: linear-gradient(90deg, #660000 0%, #4d0000 50%, #330000 100%);
+    box-shadow: 2px 0 15px rgba(0,0,0,0.4);
+    z-index: 5;
+  }
+
+  .spine {
+    left: 0;
+    border-top-left-radius: var(--radius);
+    border-bottom-left-radius: var(--radius);
+  }
+
+  .spine-back {
+    right: 0;
+    border-top-right-radius: var(--radius);
+    border-bottom-right-radius: var(--radius);
+  }
+
+
+  .book-container.centered {
+    transform: translate(-50%, -50%);
+  }
+
+  .book-container.offset-left {
+    transform: translate(calc(-50% - 150px), -50%);
+  }
+
+  .book-container.offset-right {
+    transform: translate(calc(-50% + 150px), -50%);
+  }
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div class="scene" id="scene">
+  <div class="book-container centered" id="bookContainer">
+    <div class="book closed closed-front" id="book"></div>
+  </div>
+</div>
+<div class="hearts" id="hearts"></div>
+<div class="glow-effect"></div>
+
+<script>
+   function iniciarMusica() {
+        let musicaReproducida = false;
+        let audio = null;
+
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+        document.head.appendChild(link);
+        
+        function crearControlMusica() {
+            const musicControl = document.createElement('div');
+            musicControl.innerHTML = '<i class="fas fa-heart"></i>';
+            musicControl.style.position = 'fixed';
+            musicControl.style.bottom = '20px';
+            musicControl.style.left = '20px';
+            musicControl.style.zIndex = '1000';
+            musicControl.style.background = 'linear-gradient(180deg, #ff99cc 0%, #ff66b2 50%, #ff3399 100%)';
+            musicControl.style.borderRadius = '50%';
+            musicControl.style.width = '50px';
+            musicControl.style.height = '50px';
+            musicControl.style.display = 'flex';
+            musicControl.style.alignItems = 'center';
+            musicControl.style.justifyContent = 'center';
+            musicControl.style.cursor = 'pointer';
+            musicControl.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.3)';
+            musicControl.style.transition = 'all 0.3s ease';
+            musicControl.style.color = 'pink';
+            musicControl.style.fontSize = '22px';
+            audio = new Audio();
+            audio.src = 'https://bcodestorague.anteroteobaldob.workers.dev/share/anteroteobaldob_gmail_com/AUDIO/Lana%20Del%20Rey.mp3';
+            audio.loop = true;
+            audio.volume = 0.7;
+            audio.preload = 'auto';
+            audio.load();
+
+            musicControl.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.1)';
+                this.style.color = '#ff66b2';
+            });
+            
+            musicControl.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+                this.style.color = 'pink';
+            });
+
+            musicControl.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!musicaReproducida) {
+                    audio.play().then(() => {
+                        musicaReproducida = true;
+                    }).catch(error => {
+                        this.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                        this.style.color = 'red';
+                    });
+                }
+            });
+
+            musicControl.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!musicaReproducida) {
+                    audio.play().then(() => {
+                        musicaReproducida = true;
+                    }).catch(error => {});
+                }
+                if (musicaReproducida) {
+                    audio.muted = !audio.muted;
+                    if (audio.muted) {
+                        this.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                        this.style.color = 'red';
+                    } else {
+                        this.innerHTML = '<i class="fas fa-heart"></i>';
+                        this.style.color = 'pink';
+                    }
+                }
+            });
+
+            document.body.appendChild(musicControl);
+            return musicControl;
+        }
+
+        crearControlMusica();
+        
+        function iniciarConInteraccionDesktop() {
+            if (!musicaReproducida && audio && /(Mac|iPhone|iPad|iPod|Android)/i.test(navigator.userAgent) === false) {
+                audio.play().then(() => {
+                    musicaReproducida = true;
+                }).catch(e => {});
+            }
+        }
+
+        const eventos = ['click', 'touchstart', 'keydown', 'mousedown'];
+        eventos.forEach(evento => {
+            document.addEventListener(evento, function() {
+                if (!musicaReproducida && audio) {
+                    audio.play().then(() => {
+                        musicaReproducida = true;
+                    }).catch(e => {});
+                }
+            }, { once: false });
+        });
+    }
+    iniciarMusica();
+(function(){
+  const starsContainer=document.getElementById("stars");
+  const hearts=document.getElementById("hearts");
+  const book=document.getElementById("book");
+  const bookContainer=document.getElementById("bookContainer");
+  const scene=document.getElementById("scene");
+  
+  let isHorizontal = false;
+  
+  function checkOrientation(){
+    const vw=innerWidth,vh=innerHeight;
+    isHorizontal = false;
+    hearts.classList.remove("horizontal");
+  }
+  
+  addEventListener("resize",checkOrientation);
+  addEventListener("orientationchange",checkOrientation);
+  checkOrientation();
+
+  for(let i=0;i<120;i++){
+    const star=document.createElement("div");
+    star.className="star";
+    star.style.left=(Math.random()*100)+"%";
+    star.style.top=(Math.random()*100)+"%";
+    const size=Math.random()*2+1;
+    star.style.width=size+"px";
+    star.style.height=size+"px";
+    star.style.animationDuration=(Math.random()*5+3)+"s";
+    star.style.animationDelay=(Math.random()*10)+"s";
+    starsContainer.appendChild(star);
+  }
+
+  function shootingStar(){
+    const star=document.createElement("div");
+    star.className="shooting-star";
+    star.style.height=(Math.random()*2+1)+"px";
+    const speed=1000+Math.random()*3000;
+    
+    star.style.top="-20px";
+    star.style.left=(Math.random()*100)+"%";
+    star.animate([
+      {transform:"translateY(0) rotate(90deg)",opacity:1},
+      {transform:"translateY(130vh) rotate(90deg)",opacity:0}
+    ],{duration:speed,easing:"linear"});
+    
+    document.body.appendChild(star);
+    setTimeout(()=>star.remove(),speed);
+  }
+  setInterval(shootingStar,1200);
+
+  setInterval(()=>{
+    const h=document.createElement("span");
+    h.textContent=["❤️","💗","💖","💕","🌸","💘","✨","🌟"][Math.floor(Math.random()*8)];
+    h.style.setProperty('--dur',(Math.random()*3+3)+'s');
+    h.style.left=(Math.random()*100)+"%";
+    h.style.fontSize=(Math.random()*1.5+1.2)+"rem";
+    hearts.appendChild(h);
+    setTimeout(()=>h.remove(),7000);
+  },800);
+
+  const paginas = [
+    {
+      imagen: "https://bcstorage.bcode.me/index.php?proxy_url=https%3A%2F%2Ff005.backblazeb2.com%2Ffile%2Fbcodestorage%2FBCDetallesPro_Enpoind%252Ftemp_upload_1788015896145.jpeg",
+      titulo: "Por Tu Sonrisa",
+      texto: "Que ilumina mis días más grises y llena de luz cada momento que compartimos."
+    },
+    {
+      imagen: "https://bcstorage.bcode.me/index.php?proxy_url=https%3A%2F%2Ff005.backblazeb2.com%2Ffile%2Fbcodestorage%2FBCDetallesPro_Enpoind%252Ftemp_upload_1788015925519.jpeg",
+      titulo: "Por Tu Mirada",
+      texto: "Que dice más que mil palabras y en la que me pierdo cada vez que te veo."
+    },
+    {
+      imagen: "https://bcstorage.bcode.me/index.php?proxy_url=https%3A%2F%2Ff005.backblazeb2.com%2Ffile%2Fbcodestorage%2FBCDetallesPro_Enpoind%252Ftemp_upload_1788015979846.jpeg",
+      titulo: "Por Tu Compañía",
+      texto: "Que transforma los momentos simples en recuerdos inolvidables."
+    },
+    {
+      imagen: "https://bcstorage.bcode.me/index.php?proxy_url=https%3A%2F%2Ff005.backblazeb2.com%2Ffile%2Fbcodestorage%2FBCDetallesPro_Enpoind%252Ftemp_upload_1788016045327.jpeg",
+      titulo: "Por Tu Bondad",
+      texto: "Que toca cada corazón que conoces y hace del mundo un lugar mejor."
+    },
+    {
+      imagen: "https://bcstorage.bcode.me/index.php?proxy_url=https%3A%2F%2Ff005.backblazeb2.com%2Ffile%2Fbcodestorage%2FBCDetallesPro_Enpoind%252Ftemp_upload_1788016084657.jpeg",
+      titulo: "Por Tu Esencia",
+      texto: "Única e irrepetible, que hace que cada día a tu lado sea especial."
+    },
+    {
+      imagen: "https://bcstorage.bcode.me/index.php?proxy_url=https%3A%2F%2Ff005.backblazeb2.com%2Ffile%2Fbcodestorage%2FBCDetallesPro_Enpoind%252Ftemp_upload_1788016233340.jpeg",
+      titulo: "Por Todo Lo Que Eres",
+      texto: "Y por todo lo que juntos podemos llegar a ser. Te amo."
+    }
+  ];
+
+  const TOTAL_PAGES = paginas.length;
+  const TOTAL_SHEETS = Math.ceil(TOTAL_PAGES / 2) + 1;
+
+  const makePage = (n) => {
+    const p = document.createElement('div');
+    p.className = 'page';
+    
+    const pageData = paginas[n-1];
+    
+    // Bordes decorativos
+    const borderTop = document.createElement('div');
+    borderTop.className = 'page-border border-top';
+    
+    const borderBottom = document.createElement('div');
+    borderBottom.className = 'page-border border-bottom';
+    
+    const borderLeft = document.createElement('div');
+    borderLeft.className = 'page-border border-left';
+    
+    const borderRight = document.createElement('div');
+    borderRight.className = 'page-border border-right';
+    
+    // Decoraciones tipo Hello Kitty
+    const kitty1 = document.createElement('div');
+    kitty1.className = 'kitty-decoration kitty-1';
+    
+    const kitty2 = document.createElement('div');
+    kitty2.className = 'kitty-decoration kitty-2';
+    
+    const romanticDecoration = document.createElement('div');
+    romanticDecoration.className = 'romantic-decoration';
+    
+    const flourish1 = document.createElement('div');
+    flourish1.className = 'flourish flourish-1';
+    flourish1.innerHTML = '❦';
+    
+    const flourish2 = document.createElement('div');
+    flourish2.className = 'flourish flourish-2';
+    flourish2.innerHTML = '✤';
+    
+    romanticDecoration.appendChild(flourish1);
+    romanticDecoration.appendChild(flourish2);
+    
+    const pageContent = document.createElement('div');
+    pageContent.className = 'page-content';
+    
+    const img = document.createElement('img');
+    img.className = 'page-image';
+    img.src = pageData.imagen;
+    img.alt = pageData.titulo;
+    
+    const title = document.createElement('div');
+    title.className = 'page-title';
+    title.textContent = pageData.titulo;
+    
+    const text = document.createElement('div');
+    text.className = 'page-text';
+    text.textContent = pageData.texto;
+    
+    const folio = document.createElement('div');
+    folio.className = 'folio';
+    folio.textContent = n;
+    
+    pageContent.appendChild(img);
+    pageContent.appendChild(title);
+    pageContent.appendChild(text);
+    
+    p.appendChild(pageContent);
+    p.appendChild(romanticDecoration);
+    p.appendChild(borderTop);
+    p.appendChild(borderBottom);
+    p.appendChild(borderLeft);
+    p.appendChild(borderRight);
+    p.appendChild(kitty1);
+    p.appendChild(kitty2);
+    p.appendChild(folio);
+    
+    return p;
+  };
+
+  // Portada frontal premium
+  const coverFront = () => {
+    const c = document.createElement('div');
+    c.className = 'cover';
+    c.innerHTML = `
+      <div style="position:relative; z-index:2;">
+        <h1>Mil Cosas Por Las Que Te Amo</h1>
+      </div>
+    `;
+
+    const spine = document.createElement('div');
+    spine.className = 'spine';
+    c.appendChild(spine);
+    
+    return c;
+  };
+
+  // Portada trasera premium
+  const coverBack = () => {
+    const c = document.createElement('div');
+    c.className = 'cover cover-back';
+    c.innerHTML = `
+      <div style="position:relative; z-index:2;">
+        <p style="font-size:2.2rem; margin-top:15rem;">Para ti mi Amor 🥰</p>
+        <p style="font-size:1.8rem; margin-top:2rem;">Con todo mi amor</p>
+      </div>
+    `;
+    
+    const spineBack = document.createElement('div');
+    spineBack.className = 'spine-back';
+    c.appendChild(spineBack);
+    
+    return c;
+  };
+  
+  const sheets = [];
+  for(let i = 0; i < TOTAL_SHEETS; i++){
+    const S = document.createElement('div');
+    S.className = 'sheet';
+    S.dataset.i = i;
+    S._a = 0;
+    S._t = 0;
+    S._v = 0;
+    S.style.zIndex = 4000 - i;
+    
+    const R = document.createElement('div');
+    R.className = 'face right';
+    const L = document.createElement('div');
+    L.className = 'face left';
+    const Rin = document.createElement('div');
+    Rin.className = 'inner';
+    const Lin = document.createElement('div');
+    Lin.className = 'inner';
+
+    if(i === 0){
+      Rin.appendChild(coverFront());
+      Lin.appendChild(makePage(1));
+    } else if(i === TOTAL_SHEETS - 1){
+      Rin.appendChild(makePage(TOTAL_PAGES));
+      Lin.appendChild(coverBack());
+    } else {
+      const pr = 2 * i, pl = 2 * i + 1;
+      if(pr <= TOTAL_PAGES) Rin.appendChild(makePage(pr));
+      if(pl <= TOTAL_PAGES) Lin.appendChild(makePage(pl));
+    }
+
+    R.appendChild(Rin);
+    L.appendChild(Lin);
+    
+    const curlR = document.createElement('div');
+    curlR.className = 'curl-overlay';
+    const curlL = document.createElement('div');
+    curlL.className = 'curl-overlay';
+    const specR = document.createElement('div');
+    specR.className = 'specular';
+    const specL = document.createElement('div');
+    specL.className = 'specular';
+    const edgeR = document.createElement('div');
+    edgeR.className = 'edge-spec';
+    const edgeL = document.createElement('div');
+    edgeL.className = 'edge-spec';
+    
+    const edgeGlow = document.createElement('div');
+    edgeGlow.className = 'edge-glow';
+    R.appendChild(edgeGlow);
+    
+    Rin.appendChild(curlR);
+    Rin.appendChild(specR);
+    Rin.appendChild(edgeR);
+    Lin.appendChild(curlL);
+    Lin.appendChild(specL);
+    Lin.appendChild(edgeL);
+    
+    S.appendChild(R);
+    S.appendChild(L);
+    
+    const shadow = document.createElement("div");
+    shadow.className = "shadow";
+    S.appendChild(shadow);
+    S._shadow = shadow;
+    
+    S._curlR = curlR;
+    S._curlL = curlL;
+    S._specR = specR;
+    S._specL = specL;
+    S._edgeR = edgeR;
+    S._edgeL = edgeL;
+    
+    S.addEventListener('pointerdown', onDown);
+    S.addEventListener('touchstart', onDown);
+    
+    book.appendChild(S);
+    sheets.push(S);
+  }
+
+  let pointer = 0;
+  const K = 14, D = 5, DT = 1/60;
+  let run = false;
+  
+  function frame(){
+    run = true;
+    let move = false;
+    
+    for(const s of sheets){
+      const d = s._t - s._a;
+      s._v += (K * d - D * s._v) * DT;
+      s._a += s._v * DT;
+      
+      if(s._a < 0){ s._a = 0; s._v = 0; }
+      if(s._a > Math.PI){ s._a = Math.PI; s._v = 0; }
+      
+      const angle = -s._a * 180 / Math.PI;
+      s.style.transform = `rotateY(${angle}deg)`;
+      
+      const progress = s._a / Math.PI;
+      if(progress > 0 && progress < 1){
+        const alpha = (progress < 0.5) ? 0.55 * progress : 0.55 * (1 - progress);
+        const spread = 60 + 90 * progress;
+        s._shadow.style.background = `radial-gradient(120% 100% at ${progress * 100}% 50%, rgba(0,0,0,${alpha}) 0%, rgba(0,0,0,${alpha * 0.5}) ${spread}%, transparent 100%)`;
+        s._shadow.style.opacity = alpha > 0.01 ? 1 : 0;
+      } else {
+        s._shadow.style.opacity = 0;
+      }
+      
+      const deg = s._a * 180 / Math.PI;
+      s.style.zIndex = (deg < 90) ? (4000 - +s.dataset.i) : (6000 + +s.dataset.i);
+      
+      if(Math.abs(d) > 1e-3) move = true;
+    }
+    
+    if(move) requestAnimationFrame(frame);
+    else run = false;
+  }
+
+  function updateBookPosition() {
+    if(pointer === 0) {
+      bookContainer.className = 'book-container centered';
+    } else if(pointer === sheets.length) {
+      bookContainer.className = 'book-container centered';
+    } else {
+      // Pequeño desplazamiento para mejor visibilidad al pasar páginas
+      bookContainer.className = 'book-container centered';
+    }
+  }
+
+  function fitSmooth(){
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const bookW = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--book-w'));
+    const bookH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--book-h'));
+    const margin = 16;
+    
+    let scale = Math.min((vw - margin * 2) / bookW, (vh - margin * 2) / bookH);
+    
+    book.style.transition = "transform 0.9s cubic-bezier(.25,1.5,.5,1)";
+    book.style.transform = `scale(${scale})`;
+    
+    updateBookPosition();
+  }
+
+  let drag = null;
+  
+  function getPos(e){
+    if(e.touches && e.touches.length){
+      return {x: e.touches[0].clientX, y: e.touches[0].clientY};
+    }
+    return {x: e.clientX, y: e.clientY};
+  }
+  
+  function onDown(e){
+    const pos = getPos(e);
+    const s = e.currentTarget;
+    const i = +s.dataset.i;
+    
+    if(!(i === pointer || i === pointer - 1)) return;
+    
+    s.classList.add('turning');
+    drag = {s, i, sx: pos.x, sy: pos.y, sa: s._a};
+    s.style.zIndex = 8000;
+    
+    if(e.type.startsWith("pointer")) s.setPointerCapture(e.pointerId);
+    
+    document.addEventListener('pointermove', onMove);
+    document.addEventListener('pointerup', onUp, {once: true});
+    document.addEventListener('touchmove', onMove, {passive: false});
+    document.addEventListener('touchend', onUp, {once: true});
+  }
+  
+  function onMove(e){
+    if(!drag) return;
+    if(e.cancelable) e.preventDefault();
+    
+    const pos = getPos(e);
+    const {s, sx, sa} = drag;
+    const delta = pos.x - sx;
+    const base = scene.clientWidth * 0.5;
+    let a = sa - (delta / base) * Math.PI;
+    
+    if(a < 0) a = 0;
+    if(a > Math.PI) a = Math.PI;
+    
+    s._t = a;
+    if(!run) frame();
+  }
+  
+  function onUp(){
+    if(!drag) return;
+    
+    const {s, i} = drag;
+    drag = null;
+    
+    document.removeEventListener('pointermove', onMove);
+    document.removeEventListener('touchmove', onMove);
+    
+    const goLeft = s._a >= Math.PI / 2;
+    s._t = goLeft ? Math.PI : 0;
+    pointer = goLeft ? Math.max(pointer, i + 1) : Math.min(pointer, i);
+    
+    setTimeout(() => {
+      s.classList.remove('turning');
+    }, 800);
+    
+    if(!run) frame();
+    fitSmooth();
+  }
+
+  function initSwiperGestures() {
+    let startX = 0;
+    let startY = 0;
+    let isSwiping = false;
+    
+    document.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      isSwiping = true;
+    });
+    
+    document.addEventListener('touchmove', (e) => {
+      if (!isSwiping) return;
+      
+      const currentX = e.touches[0].clientX;
+      const currentY = e.touches[0].clientY;
+      const diffX = startX - currentX;
+      const diffY = startY - currentY;
+      
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 30) {
+        e.preventDefault();
+        
+        const progress = Math.min(Math.abs(diffX) / 200, 1);
+        
+        if (diffX > 0 && pointer < sheets.length) {
+          sheets[pointer].classList.add('turning');
+          sheets[pointer]._t = Math.PI * progress;
+        } else if (diffX < 0 && pointer > 0) {
+          sheets[pointer - 1].classList.add('turning');
+          sheets[pointer - 1]._t = Math.PI * (1 - progress);
+        }
+        
+        if (!run) frame();
+      }
+    });
+    
+    document.addEventListener('touchend', (e) => {
+      if (!isSwiping) return;
+      
+      const endX = e.changedTouches[0].clientX;
+      const endY = e.changedTouches[0].clientY;
+      const diffX = startX - endX;
+      const diffY = startY - endY;
+      
+      if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
+        if (diffX > 0 && pointer < sheets.length) {
+          sheets[pointer]._t = Math.PI;
+          pointer++;
+        } else if (diffX < 0 && pointer > 0) {
+          sheets[pointer - 1]._t = 0;
+          pointer--;
+        }
+        
+        sheets.forEach(sheet => sheet.classList.remove('turning'));
+        
+        if (!run) frame();
+        fitSmooth();
+      } else {
+        if (pointer < sheets.length) sheets[pointer]._t = 0;
+        if (pointer > 0) sheets[pointer - 1]._t = Math.PI;
+        sheets.forEach(sheet => sheet.classList.remove('turning'));
+        if (!run) frame();
+      }
+      
+      isSwiping = false;
+    });
+  }
+
+  addEventListener('resize', fitSmooth);
+  addEventListener('orientationchange', fitSmooth);
+  
+  addEventListener("load", () => {
+    fitSmooth();
+    initSwiperGestures();
+    
+    setTimeout(() => {
+      book.classList.add("ready");
+    }, 100);
+  });
+})();
+
+</script>
+<style id='style_n1269765317'>img[src*='https://bcstorage.bcode.me/index.php?proxy_url=https%3A%2F%2Ff005.backblazeb2.com%2Ffile%2Fbcodestorage%2FBCDetallesPro_Enpoind%252Ftemp_upload_1788015979846.jpeg'] { width: 200px !important; height: 200px !important; }</style></body>
+</html>
